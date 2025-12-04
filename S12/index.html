@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Laboratorio S12: Docker en CI/CD y Cloud Run</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="../shared/css/uah-reveal.css">
+    
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/github.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Título -->
+            <section class="title-slide">
+                <h1>Laboratorio S12</h1>
+                <h2>Docker en CI/CD y Cloud Run</h2>
+                <p>Ampliación de Sistemas Operativos</p>
+                <p><small>Curso 2025-2026</small></p>
+                <p><small>Universidad de Alcalá - Patrimonio de la Humanidad</small></p>
+                <aside class="notes">
+                    Bienvenida a la sesión S12. Esta sesión construye sobre los fundamentos de Docker aprendidos en S11, llevándolos al siguiente nivel con CI/CD y despliegue en la nube.
+                </aside>
+            </section>
+
+            <!-- Agenda -->
+            <section>
+                <h2>Agenda</h2>
+                <ul>
+                    <li class="fragment">Registros de imágenes Docker</li>
+                    <li class="fragment">Cloud Build - Automatización CI/CD</li>
+                    <li class="fragment">Cloud Run - Serverless Containers</li>
+                    <li class="fragment">Secret Manager de GCP</li>
+                    <li class="fragment">Migración Docker Compose → Cloud Run</li>
+                    <li class="fragment">Prácticas hands-on</li>
+                </ul>
+                <aside class="notes">
+                    Presentar la estructura de la sesión. Duración total: 4 horas con descansos. Esta sesión es práctica e intensiva.
+                </aside>
+            </section>
+
+            <!-- BLOQUE 1: Registros de Imágenes Docker -->
+            <section>
+                <section>
+                    <h2>Bloque 1: Registros de Imágenes Docker</h2>
+                    <p class="fragment">Conceptos de registros</p>
+                    <p class="fragment">Docker Hub vs Artifact Registry</p>
+                    <p class="fragment">Publicación manual de imágenes</p>
+                    <p class="fragment">Autenticación y mejores prácticas</p>
+                    <aside class="notes">
+                        Este bloque introduce los conceptos de registros de imágenes y cómo publicar imágenes en diferentes plataformas.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Qué son los Registros de Imágenes?</h2>
+                    <p class="fragment">Repositorios centralizados para almacenar imágenes Docker</p>
+                    <p class="fragment">Permiten compartir imágenes entre equipos y entornos</p>
+                    <p class="fragment">Facilitan la distribución de aplicaciones contenedorizadas</p>
+                    <p class="fragment">Integración con servicios cloud y CI/CD</p>
+                    <aside class="notes">
+                        Los registros son esenciales para el flujo de trabajo de contenedores. Sin registros, cada desarrollador tendría que construir imágenes localmente.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Tipos de Registros</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Públicos</h3>
+                            <ul>
+                                <li class="fragment">Docker Hub</li>
+                                <li class="fragment">GitHub Container Registry</li>
+                                <li class="fragment">Acceso abierto</li>
+                                <li class="fragment">Ideal para open source</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Privados</h3>
+                            <ul>
+                                <li class="fragment">Artifact Registry (GCP)</li>
+                                <li class="fragment">ECR (AWS)</li>
+                                <li class="fragment">ACR (Azure)</li>
+                                <li class="fragment">Control de acceso granular</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">
+                        Distinguir entre registros públicos y privados. Los privados ofrecen mejor seguridad y control.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Docker Hub</h2>
+                    <ul>
+                        <li class="fragment">Registro público más utilizado</li>
+                        <li class="fragment">Acceso gratuito para imágenes públicas</li>
+                        <li class="fragment">Planes de pago para imágenes privadas</li>
+                        <li class="fragment">Formato: <code>usuario/imagen:tag</code></li>
+                        <li class="fragment">Ideal para proyectos open source</li>
+                    </ul>
+                    <aside class="notes">
+                        Docker Hub es el punto de partida para la mayoría de desarrolladores. Es simple pero tiene limitaciones en planes gratuitos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Google Container Registry (GCR)</h2>
+                    <ul>
+                        <li class="fragment">Servicio original de GCP</li>
+                        <li class="fragment">Utiliza Cloud Storage como backend</li>
+                        <li class="fragment">Formato: <code>gcr.io/PROJECT_ID/imagen:tag</code></li>
+                        <li class="fragment"><strong>En desuso</strong> - Migrar a Artifact Registry</li>
+                    </ul>
+                    <aside class="notes">
+                        GCR está siendo reemplazado por Artifact Registry. Mencionar pero enfatizar que Artifact Registry es el futuro.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Artifact Registry</h2>
+                    <ul>
+                        <li class="fragment">Servicio moderno de GCP</li>
+                        <li class="fragment">Soporta múltiples formatos (Docker, Maven, npm)</li>
+                        <li class="fragment">Control de acceso mediante IAM</li>
+                        <li class="fragment">Formato: <code>REGION-docker.pkg.dev/PROJECT_ID/REPO/IMAGE:TAG</code></li>
+                        <li class="fragment">Mejor integración con servicios GCP</li>
+                    </ul>
+                    <aside class="notes">
+                        Artifact Registry es el servicio recomendado para nuevos proyectos en GCP. Ofrece mejor integración y más características.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Comparativa: Docker Hub vs Artifact Registry</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Característica</th>
+                                <th>Docker Hub</th>
+                                <th>Artifact Registry</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment">
+                                <td>Público/Privado</td>
+                                <td>Ambos</td>
+                                <td>Privado</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td>Integración GCP</td>
+                                <td>Limitada</td>
+                                <td>Nativa</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td>Control de acceso</td>
+                                <td>Básico</td>
+                                <td>IAM granular</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td>Costo</td>
+                                <td>Gratis (limitado)</td>
+                                <td>Pay-per-use</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <aside class="notes">
+                        Comparar ambos servicios para ayudar a los estudiantes a decidir cuándo usar cada uno.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Publicación en Docker Hub</h2>
+                    <pre><code data-trim data-noescape>
+# 1. Autenticarse
+docker login
+
+# 2. Construir imagen
+docker build -t app-info-service:latest .
+
+# 3. Tagging con formato Docker Hub
+docker tag app-info-service:latest \
+  usuario/app-info-service:latest
+
+# 4. Publicar
+docker push usuario/app-info-service:latest
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar el proceso paso a paso. Enfatizar la importancia del formato correcto del tag.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Publicación en Artifact Registry</h2>
+                    <pre><code data-trim data-noescape>
+# 1. Habilitar API
+gcloud services enable artifactregistry.googleapis.com
+
+# 2. Crear repositorio
+gcloud artifacts repositories create docker-repo \
+  --repository-format=docker \
+  --location=europe-west1
+
+# 3. Configurar autenticación
+gcloud auth configure-docker \
+  europe-west1-docker.pkg.dev
+
+# 4. Tagging y push
+docker tag app-info-service:latest \
+  europe-west1-docker.pkg.dev/PROJECT_ID/docker-repo/app-info-service:latest
+
+docker push europe-west1-docker.pkg.dev/PROJECT_ID/docker-repo/app-info-service:latest
+                    </code></pre>
+                    <aside class="notes">
+                        El proceso es similar pero requiere configuración previa de GCP. El formato del tag es más largo pero más descriptivo.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Mejores Prácticas de Tagging</h2>
+                    <ul>
+                        <li class="fragment">Usar tags semánticos: <code>v1.2.3</code></li>
+                        <li class="fragment">Tag <code>latest</code> para versión más reciente</li>
+                        <li class="fragment">Tags basados en commit SHA para trazabilidad</li>
+                        <li class="fragment">Evitar tags genéricos como <code>dev</code>, <code>test</code></li>
+                        <li class="fragment">Documentar estrategia de versionado</li>
+                    </ul>
+                    <aside class="notes">
+                        El tagging correcto es crucial para gestión de versiones y rollbacks. Enfatizar la importancia de una estrategia clara.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Práctica 1: Publicación de Imágenes</h2>
+                    <p class="fragment">Objetivo: Publicar imágenes en Docker Hub y Artifact Registry</p>
+                    <ul>
+                        <li class="fragment">Construir imagen localmente</li>
+                        <li class="fragment">Publicar en Docker Hub</li>
+                        <li class="fragment">Publicar en Artifact Registry</li>
+                        <li class="fragment">Comparar ambos procesos</li>
+                    </ul>
+                    <aside class="notes">
+                        Esta práctica permite a los estudiantes experimentar con ambos registros y entender las diferencias prácticas.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- BLOQUE 2: Cloud Build -->
+            <section>
+                <section>
+                    <h2>Bloque 2: Cloud Build - Automatización CI/CD</h2>
+                    <p class="fragment">Conceptos de CI/CD</p>
+                    <p class="fragment">Configuración de cloudbuild.yaml</p>
+                    <p class="fragment">Triggers automáticos</p>
+                    <p class="fragment">Integración con Artifact Registry</p>
+                    <aside class="notes">
+                        Este bloque introduce la automatización mediante Cloud Build, eliminando la necesidad de builds manuales.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Qué es CI/CD?</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>CI - Continuous Integration</h3>
+                            <ul>
+                                <li class="fragment">Integración frecuente de código</li>
+                                <li class="fragment">Builds y tests automatizados</li>
+                                <li class="fragment">Detección temprana de errores</li>
+                                <li class="fragment">Código siempre funcional</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>CD - Continuous Deployment</h3>
+                            <ul>
+                                <li class="fragment">Despliegue automatizado</li>
+                                <li class="fragment">Publicación de artefactos</li>
+                                <li class="fragment">Despliegue en producción</li>
+                                <li class="fragment">Reducción de errores manuales</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">
+                        Explicar los beneficios de CI/CD: velocidad, calidad y confiabilidad.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Cloud Build</h2>
+                    <ul>
+                        <li class="fragment">Servicio completamente gestionado de GCP</li>
+                        <li class="fragment">Ejecuta builds en la nube</li>
+                        <li class="fragment">Sin infraestructura propia</li>
+                        <li class="fragment">Integración nativa con servicios GCP</li>
+                        <li class="fragment">Escalable y confiable</li>
+                    </ul>
+                    <aside class="notes">
+                        Cloud Build elimina la necesidad de mantener servidores de CI/CD propios. Todo se gestiona en la nube.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Arquitectura de Cloud Build</h2>
+                    <ul>
+                        <li class="fragment">Builds ejecutados en contenedores efímeros</li>
+                        <li class="fragment">Cada paso en un contenedor específico</li>
+                        <li class="fragment">Pasos ejecutados secuencialmente</li>
+                        <li class="fragment">Build falla si cualquier paso falla</li>
+                        <li class="fragment">Logs disponibles en Cloud Logging</li>
+                    </ul>
+                    <aside class="notes">
+                        La arquitectura basada en contenedores permite usar cualquier herramienta en cada paso del build.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Estructura de cloudbuild.yaml</h2>
+                    <pre><code data-trim data-noescape>
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'imagen:tag', '.']
+  
+images:
+  - 'imagen:tag'
+  
+substitutions:
+  _VARIABLE: 'valor'
+  
+options:
+  machineType: 'E2_HIGHCPU_8'
+  
+timeout: '1200s'
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar la estructura básica. Cada sección tiene un propósito específico.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Ejemplo: cloudbuild.yaml Completo</h2>
+                    <pre><code data-trim data-noescape>
+steps:
+  # Paso 1: Construir imagen
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/app:${SHORT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/app:latest'
+      - '.'
+  
+  # Paso 2: Publicar imagen
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/app'
+
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/app:${SHORT_SHA}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/app:latest'
+
+substitutions:
+  _REGION: 'europe-west1'
+  _REPO_NAME: 'docker-repo'
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar un ejemplo completo y funcional. Explicar cada parte en detalle.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Variables en Cloud Build</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Automáticas</h3>
+                            <ul>
+                                <li class="fragment"><code>PROJECT_ID</code></li>
+                                <li class="fragment"><code>SHORT_SHA</code></li>
+                                <li class="fragment"><code>COMMIT_SHA</code></li>
+                                <li class="fragment"><code>BRANCH_NAME</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Personalizadas</h3>
+                            <ul>
+                                <li class="fragment">Prefijo <code>_</code></li>
+                                <li class="fragment">Definidas en <code>substitutions</code></li>
+                                <li class="fragment">Pueden pasarse externamente</li>
+                                <li class="fragment">Útiles para diferentes entornos</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">
+                        Las variables permiten parametrizar builds. Las automáticas proporcionan información del contexto del build.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Ejecutar Build Manualmente</h2>
+                    <pre><code data-trim data-noescape>
+# Desde directorio con cloudbuild.yaml
+gcloud builds submit --config cloudbuild.yaml
+
+# Con substitutions personalizadas
+gcloud builds submit --config cloudbuild.yaml \
+  --substitutions=_REGION=us-central1
+
+# Ver builds recientes
+gcloud builds list --limit=10
+                    </code></pre>
+                    <aside class="notes">
+                        Los builds manuales son útiles para testing antes de configurar triggers.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Triggers de Cloud Build</h2>
+                    <ul>
+                        <li class="fragment">Ejecutan builds automáticamente</li>
+                        <li class="fragment">Responden a eventos de Git</li>
+                        <li class="fragment">Push a ramas específicas</li>
+                        <li class="fragment">Creación de tags</li>
+                        <li class="fragment">Pull requests</li>
+                    </ul>
+                    <aside class="notes">
+                        Los triggers eliminan la necesidad de ejecutar builds manualmente. Cada push puede disparar un build automático.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Configurar Trigger</h2>
+                    <ul>
+                        <li class="fragment">Conectar repositorio Git a Cloud Build</li>
+                        <li class="fragment">Definir evento (push, tag, PR)</li>
+                        <li class="fragment">Especificar rama o patrón</li>
+                        <li class="fragment">Seleccionar archivo cloudbuild.yaml</li>
+                        <li class="fragment">Configurar substitutions opcionales</li>
+                    </ul>
+                    <aside class="notes">
+                        Los triggers pueden configurarse mediante consola o CLI. Mostrar ambos métodos si es posible.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Flujo Completo CI/CD</h2>
+                    <ol>
+                        <li class="fragment">Desarrollador hace push a Git</li>
+                        <li class="fragment">Trigger detecta el cambio</li>
+                        <li class="fragment">Cloud Build ejecuta build</li>
+                        <li class="fragment">Imagen se construye y publica</li>
+                        <li class="fragment">(Opcional) Despliegue automático</li>
+                    </ol>
+                    <aside class="notes">
+                        Mostrar el flujo completo desde código hasta producción. Este es el objetivo final de CI/CD.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Práctica 2: Automatización con Cloud Build</h2>
+                    <p class="fragment">Objetivo: Configurar CI/CD completo</p>
+                    <ul>
+                        <li class="fragment">Crear cloudbuild.yaml</li>
+                        <li class="fragment">Ejecutar build manual</li>
+                        <li class="fragment">Configurar trigger</li>
+                        <li class="fragment">Probar build automático</li>
+                    </ul>
+                    <aside class="notes">
+                        Esta práctica permite a los estudiantes experimentar con la automatización completa.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- BLOQUE 3: Cloud Run -->
+            <section>
+                <section>
+                    <h2>Bloque 3: Cloud Run - Serverless Containers</h2>
+                    <p class="fragment">Conceptos de serverless</p>
+                    <p class="fragment">Despliegue en Cloud Run</p>
+                    <p class="fragment">Configuración avanzada</p>
+                    <p class="fragment">Escalado automático</p>
+                    <aside class="notes">
+                        Este bloque introduce Cloud Run, permitiendo ejecutar contenedores sin gestionar servidores.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Qué es Serverless?</h2>
+                    <ul>
+                        <li class="fragment">Modelo de ejecución sin gestión de servidores</li>
+                        <li class="fragment">El proveedor gestiona infraestructura</li>
+                        <li class="fragment">Escalado automático</li>
+                        <li class="fragment">Facturación por uso</li>
+                        <li class="fragment">Sin costo cuando no hay tráfico</li>
+                    </ul>
+                    <aside class="notes">
+                        Serverless cambia el modelo de pago: de servidores siempre activos a pago por uso real.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Cloud Run</h2>
+                    <ul>
+                        <li class="fragment">Servicio serverless de GCP</li>
+                        <li class="fragment">Ejecuta contenedores Docker</li>
+                        <li class="fragment">Escalado automático desde cero</li>
+                        <li class="fragment">Facturación por petición y tiempo de ejecución</li>
+                        <li class="fragment">Soporta HTTP/HTTPS y gRPC</li>
+                    </ul>
+                    <aside class="notes">
+                        Cloud Run combina la flexibilidad de contenedores con la simplicidad de serverless.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Arquitectura de Cloud Run</h2>
+                    <ul>
+                        <li class="fragment">Instancias efímeras creadas bajo demanda</li>
+                        <li class="fragment">Múltiples peticiones por instancia (concurrency)</li>
+                        <li class="fragment">Escalado horizontal automático</li>
+                        <li class="fragment">Load balancer gestionado</li>
+                        <li class="fragment">Health checks automáticos</li>
+                    </ul>
+                    <aside class="notes">
+                        Cloud Run gestiona todo automáticamente: creación de instancias, distribución de carga, health checks.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Contrato de Cloud Run</h2>
+                    <p class="fragment">La aplicación debe:</p>
+                    <ul>
+                        <li class="fragment">Escuchar en puerto definido por variable <code>PORT</code></li>
+                        <li class="fragment">Responder a peticiones HTTP</li>
+                        <li class="fragment">Implementar endpoint de health check</li>
+                        <li class="fragment">Ser stateless (sin estado local)</li>
+                        <li class="fragment">Manejar shutdown gracefully</li>
+                    </ul>
+                    <aside class="notes">
+                        El contrato de Cloud Run es simple pero importante. Las aplicaciones deben seguir estas reglas.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Despliegue Básico</h2>
+                    <pre><code data-trim data-noescape>
+# Desplegar desde imagen existente
+gcloud run deploy app-info-service \
+  --image europe-west1-docker.pkg.dev/PROJECT_ID/repo/app:latest \
+  --region europe-west1 \
+  --platform managed \
+  --allow-unauthenticated
+
+# Desplegar desde código fuente
+gcloud run deploy app-info-service \
+  --source . \
+  --region europe-west1 \
+  --allow-unauthenticated
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar ambos métodos de despliegue. El método desde código fuente es más simple pero menos controlable.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Variables de Entorno</h2>
+                    <pre><code data-trim data-noescape>
+# Durante despliegue
+gcloud run deploy app-info-service \
+  --set-env-vars "APP_NAME=Mi App,ENVIRONMENT=production"
+
+# Actualizar servicio existente
+gcloud run services update app-info-service \
+  --set-env-vars "APP_NAME=Mi App,ENVIRONMENT=production"
+                    </code></pre>
+                    <aside class="notes">
+                        Las variables de entorno son útiles para configuración no sensible. Para secretos, usar Secret Manager.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Configuración de Recursos</h2>
+                    <pre><code data-trim data-noescape>
+gcloud run services update app-info-service \
+  --cpu 2 \
+  --memory 1Gi \
+  --max-instances 10 \
+  --min-instances 0 \
+  --concurrency 80 \
+  --timeout 300
+                    </code></pre>
+                    <ul>
+                        <li class="fragment"><code>--cpu</code>: CPUs asignadas (1-8)</li>
+                        <li class="fragment"><code>--memory</code>: Memoria (128MB-32GB)</li>
+                        <li class="fragment"><code>--concurrency</code>: Peticiones simultáneas por instancia</li>
+                        <li class="fragment"><code>--min-instances</code>: Instancias mínimas (0 = escala a cero)</li>
+                    </ul>
+                    <aside class="notes">
+                        La configuración de recursos afecta rendimiento y costo. Encontrar el balance correcto es importante.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Escalado Automático</h2>
+                    <ul>
+                        <li class="fragment">Escala desde cero cuando no hay tráfico</li>
+                        <li class="fragment">Crea nuevas instancias bajo demanda</li>
+                        <li class="fragment">Distribuye carga entre instancias</li>
+                        <li class="fragment">Elimina instancias cuando baja la carga</li>
+                        <li class="fragment">Cold start en primera petición después de inactividad</li>
+                    </ul>
+                    <aside class="notes">
+                        El escalado automático es una de las características más poderosas de Cloud Run. Explicar el trade-off entre costo y cold starts.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Health Checks</h2>
+                    <ul>
+                        <li class="fragment">Cloud Run verifica salud de instancias</li>
+                        <li class="fragment">Endpoint <code>/health</code> por defecto</li>
+                        <li class="fragment">Instancias no saludables no reciben tráfico</li>
+                        <li class="fragment">Reemplazo automático de instancias fallidas</li>
+                    </ul>
+                    <pre class="fragment"><code data-trim data-noescape>
+@app.route('/health')
+def health():
+    return {'status': 'healthy'}
+                    </code></pre>
+                    <aside class="notes">
+                        Los health checks son esenciales para que Cloud Run sepa cuándo una instancia está lista para recibir tráfico.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Logging y Monitorización</h2>
+                    <ul>
+                        <li class="fragment">Logs automáticos en Cloud Logging</li>
+                        <li class="fragment">stdout y stderr capturados automáticamente</li>
+                        <li class="fragment">Métricas de peticiones disponibles</li>
+                        <li class="fragment">Trazabilidad de requests</li>
+                    </ul>
+                    <pre class="fragment"><code data-trim data-noescape>
+# Ver logs
+gcloud run services logs read app-info-service \
+  --region europe-west1 --limit=50
+                    </code></pre>
+                    <aside class="notes">
+                        Los logs son esenciales para debugging. Cloud Run los proporciona automáticamente sin configuración adicional.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Pricing de Cloud Run</h2>
+                    <ul>
+                        <li class="fragment">Free tier generoso: 2M requests/mes</li>
+                        <li class="fragment">Pago por uso después del free tier</li>
+                        <li class="fragment">Facturación por:
+                            <ul>
+                                <li>Número de requests</li>
+                                <li>Tiempo de CPU</li>
+                                <li>Memoria utilizada</li>
+                            </ul>
+                        </li>
+                        <li class="fragment">Sin costo cuando escala a cero</li>
+                    </ul>
+                    <aside class="notes">
+                        El modelo de pricing de Cloud Run es muy favorable para aplicaciones con tráfico variable.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Práctica 3: Introducción a Cloud Run</h2>
+                    <p class="fragment">Objetivo: Desplegar aplicación en Cloud Run</p>
+                    <ul>
+                        <li class="fragment">Despliegue básico</li>
+                        <li class="fragment">Configurar variables de entorno</li>
+                        <li class="fragment">Ajustar recursos y escalado</li>
+                        <li class="fragment">Probar health checks</li>
+                    </ul>
+                    <aside class="notes">
+                        Esta práctica permite a los estudiantes experimentar con Cloud Run de forma práctica.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- BLOQUE 4: Secret Manager -->
+            <section>
+                <section>
+                    <h2>Bloque 4: Secret Manager y Migración</h2>
+                    <p class="fragment">Conceptos de Secret Manager</p>
+                    <p class="fragment">Integración con Cloud Run</p>
+                    <p class="fragment">Migración Docker Compose → Cloud Run</p>
+                    <p class="fragment">Mejores prácticas de seguridad</p>
+                    <aside class="notes">
+                        Este bloque final integra todo lo aprendido y muestra cómo migrar aplicaciones completas a producción.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Por qué Secret Manager?</h2>
+                    <ul>
+                        <li class="fragment">Problema: Secretos en código o imágenes</li>
+                        <li class="fragment">Solución: Almacenamiento seguro centralizado</li>
+                        <li class="fragment">Encriptación automática</li>
+                        <li class="fragment">Control de acceso mediante IAM</li>
+                        <li class="fragment">Rotación de secretos facilitada</li>
+                    </ul>
+                    <aside class="notes">
+                        Secret Manager resuelve el problema común de cómo gestionar secretos de forma segura.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Secret Manager de GCP</h2>
+                    <ul>
+                        <li class="fragment">Almacenamiento seguro de secretos</li>
+                        <li class="fragment">Encriptación en reposo y en tránsito</li>
+                        <li class="fragment">Control de acceso mediante IAM</li>
+                        <li class="fragment">Versionado de secretos</li>
+                        <li class="fragment">Auditoría de acceso</li>
+                    </ul>
+                    <aside class="notes">
+                        Secret Manager proporciona todas las características necesarias para gestión segura de secretos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Crear Secretos</h2>
+                    <pre><code data-trim data-noescape>
+# Desde línea de comandos
+echo -n "Mi secreto" | \
+  gcloud secrets create secret-name \
+  --data-file=- \
+  --replication-policy="automatic"
+
+# Desde archivo
+gcloud secrets create secret-name \
+  --data-file=secreto.txt \
+  --replication-policy="automatic"
+
+# Listar secretos
+gcloud secrets list
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar diferentes formas de crear secretos. Enfatizar la importancia de no dejar archivos con secretos en el sistema.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Versionado de Secretos</h2>
+                    <ul>
+                        <li class="fragment">Cada secreto puede tener múltiples versiones</li>
+                        <li class="fragment">Versiones permiten rotación sin cambiar código</li>
+                        <li class="fragment">Usar <code>:latest</code> para versión más reciente</li>
+                        <li class="fragment">Especificar versión específica para producción</li>
+                    </ul>
+                    <pre class="fragment"><code data-trim data-noescape>
+# Acceder a versión específica
+gcloud secrets versions access 1 --secret="secret-name"
+
+# Listar versiones
+gcloud secrets versions list secret-name
+                    </code></pre>
+                    <aside class="notes">
+                        El versionado permite rotar secretos de forma controlada y segura.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Permisos IAM</h2>
+                    <ul>
+                        <li class="fragment">Control granular de acceso</li>
+                        <li class="fragment">Roles específicos para secretos</li>
+                        <li class="fragment">Service accounts para servicios</li>
+                    </ul>
+                    <pre class="fragment"><code data-trim data-noescape>
+# Otorgar acceso a Cloud Run
+PROJECT_NUMBER=$(gcloud projects describe PROJECT_ID \
+  --format='value(projectNumber)')
+
+gcloud secrets add-iam-policy-binding secret-name \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
+                    </code></pre>
+                    <aside class="notes">
+                        Los permisos IAM son esenciales para que Cloud Run pueda acceder a secretos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Integración con Cloud Run</h2>
+                    <p class="fragment">Montar secretos como variables de entorno:</p>
+                    <pre class="fragment"><code data-trim data-noescape>
+gcloud run deploy app-info-service \
+  --update-secrets "SECRET_MESSAGE=secret-message:latest"
+                    </code></pre>
+                    <p class="fragment">Montar secretos como archivos:</p>
+                    <pre class="fragment"><code data-trim data-noescape>
+gcloud run deploy app-info-service \
+  --update-secrets "/etc/secrets/secret=secret-name:latest"
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar ambas formas de montar secretos. Las variables de entorno son más simples, los archivos más seguros.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Migración: Docker Compose → Cloud Run</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Desarrollo Local</h3>
+                            <ul>
+                                <li class="fragment">Docker Compose</li>
+                                <li class="fragment">Archivo .env</li>
+                                <li class="fragment">Volúmenes locales</li>
+                                <li class="fragment">Red Docker</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Producción</h3>
+                            <ul>
+                                <li class="fragment">Cloud Run</li>
+                                <li class="fragment">Secret Manager</li>
+                                <li class="fragment">Servicios gestionados</li>
+                                <li class="fragment">Red pública</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">
+                        Comparar desarrollo local con producción. La migración requiere cambios pero sigue el mismo Dockerfile.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Proceso de Migración</h2>
+                    <ol>
+                        <li class="fragment">Preparar aplicación (usar variable PORT)</li>
+                        <li class="fragment">Migrar secretos a Secret Manager</li>
+                        <li class="fragment">Configurar Cloud Build</li>
+                        <li class="fragment">Desplegar en Cloud Run</li>
+                        <li class="fragment">Configurar CI/CD automático</li>
+                    </ol>
+                    <aside class="notes">
+                        El proceso de migración es sistemático. Cada paso debe completarse antes del siguiente.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Cloud Build con Despliegue</h2>
+                    <pre><code data-trim data-noescape>
+steps:
+  # Construir imagen
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'imagen:tag', '.']
+  
+  # Publicar imagen
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'imagen:tag']
+  
+  # Desplegar en Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'app-info-service'
+      - '--image'
+      - 'imagen:tag'
+      - '--update-secrets'
+      - 'SECRET_MESSAGE=secret-message:latest'
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar cómo integrar despliegue en Cloud Build para CI/CD completo.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Mejores Prácticas de Seguridad</h2>
+                    <ul>
+                        <li class="fragment">Nunca hardcodear secretos en código</li>
+                        <li class="fragment">No incluir secretos en imágenes Docker</li>
+                        <li class="fragment">Usar Secret Manager para producción</li>
+                        <li class="fragment">Rotar secretos regularmente</li>
+                        <li class="fragment">Usar versiones específicas en producción</li>
+                        <li class="fragment">Limitar permisos mediante IAM</li>
+                    </ul>
+                    <aside class="notes">
+                        La seguridad es crítica. Enfatizar estas mejores prácticas en cada oportunidad.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Práctica 4: Cloud Run Avanzado</h2>
+                    <p class="fragment">Objetivo: Migración completa a Cloud Run</p>
+                    <ul>
+                        <li class="fragment">Configurar Secret Manager</li>
+                        <li class="fragment">Integrar secretos con Cloud Run</li>
+                        <li class="fragment">Migrar aplicación completa</li>
+                        <li class="fragment">Configurar CI/CD completo</li>
+                    </ul>
+                    <aside class="notes">
+                        Esta práctica final integra todo lo aprendido y permite a los estudiantes completar una migración real.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- Resumen y Cierre -->
+            <section>
+                <section>
+                    <h2>Resumen de la Sesión</h2>
+                    <ul>
+                        <li class="fragment">Hemos aprendido a publicar imágenes en registros</li>
+                        <li class="fragment">Configurado CI/CD con Cloud Build</li>
+                        <li class="fragment">Desplegado aplicaciones en Cloud Run</li>
+                        <li class="fragment">Gestionado secretos con Secret Manager</li>
+                        <li class="fragment">Migrado aplicaciones a producción</li>
+                    </ul>
+                    <aside class="notes">
+                        Resumir los conceptos clave aprendidos durante la sesión.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Conceptos Clave</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Registros</h3>
+                            <ul>
+                                <li>Docker Hub</li>
+                                <li>Artifact Registry</li>
+                                <li>Tagging correcto</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>CI/CD</h3>
+                            <ul>
+                                <li>Cloud Build</li>
+                                <li>Triggers</li>
+                                <li>Automatización</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="two-columns fragment">
+                        <div>
+                            <h3>Cloud Run</h3>
+                            <ul>
+                                <li>Serverless</li>
+                                <li>Escalado automático</li>
+                                <li>Health checks</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Seguridad</h3>
+                            <ul>
+                                <li>Secret Manager</li>
+                                <li>IAM</li>
+                                <li>Mejores prácticas</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">
+                        Reforzar los conceptos más importantes antes de cerrar.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Próximos Pasos</h2>
+                    <ul>
+                        <li class="fragment">Practicar con tus propias aplicaciones</li>
+                        <li class="fragment">Explorar configuraciones avanzadas</li>
+                        <li class="fragment">Experimentar con diferentes tipos de aplicaciones</li>
+                        <li class="fragment">Revisar documentación oficial</li>
+                        <li class="fragment">Siguiente sesión: S13 - Bases de datos</li>
+                    </ul>
+                    <aside class="notes">
+                        Motivar a los estudiantes a continuar practicando y explorando.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Recursos Adicionales</h2>
+                    <ul>
+                        <li class="fragment"><a href="https://cloud.google.com/artifact-registry/docs">Artifact Registry Docs</a></li>
+                        <li class="fragment"><a href="https://cloud.google.com/build/docs">Cloud Build Docs</a></li>
+                        <li class="fragment"><a href="https://cloud.google.com/run/docs">Cloud Run Docs</a></li>
+                        <li class="fragment"><a href="https://cloud.google.com/secret-manager/docs">Secret Manager Docs</a></li>
+                        <li class="fragment">Guías del estudiante y profesor</li>
+                    </ul>
+                    <aside class="notes">
+                        Proporcionar recursos para aprendizaje continuo.
+                    </aside>
+                </section>
+
+                <section>
+                    <h1>¡Gracias!</h1>
+                    <p>Continúa practicando y experimentando</p>
+                    <p><small>Próxima sesión: S13 - Bases de datos (Redis y Cloud SQL)</small></p>
+                    <aside class="notes">
+                        Cierre positivo de la sesión. Recordar que la siguiente sesión construirá sobre estos fundamentos.
+                    </aside>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/js/reveal-config.js"></script>
+</body>
+</html>
+

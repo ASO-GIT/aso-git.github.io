@@ -1,0 +1,279 @@
+/* 
+ * Estilos corporativos UAH para presentaciones Reveal.js
+ * Universidad de Alcalá - Patrimonio de la Humanidad
+ * 
+ * Colores corporativos:
+ * - Azul UAH: #0046AD (RGB(0, 70, 173))
+ * - Gris UAH: #C7C2BA (RGB(199, 194, 186))
+ * - Oro UAH: #D3BF96 (RGB(211, 191, 150))
+ * - Naranja UAH: #E98300 (RGB(233, 131, 0))
+ * - Marrón UAH: #91420E (RGB(145, 66, 14))
+ * - Verde UAH: #00985F (RGB(0, 152, 95))
+ * - Texto: #333333 (gris oscuro)
+ * 
+ * Contraste verificado (WCAG AA/AAA):
+ * - Azul UAH (#0046AD) sobre blanco: 7.1:1 ✓ (AAA)
+ * - Blanco sobre Azul UAH: 7.1:1 ✓ (AAA)
+ * - Texto (#333333) sobre blanco: 12.6:1 ✓ (AAA)
+ */
+
+/* Tipografía corporativa: Verdana */
+.reveal {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #333333;
+}
+
+/* Títulos - Colores corporativos UAH */
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+    color: #0046AD; /* Azul UAH */
+    font-weight: bold;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.reveal h1 {
+    font-size: 2.5em;
+    color: #0046AD;
+}
+
+.reveal h2 {
+    font-size: 2em;
+    color: #0046AD;
+}
+
+.reveal h3 {
+    font-size: 1.5em;
+    color: #0046AD;
+}
+
+.reveal h4 {
+    font-size: 1.2em;
+    color: #333333;
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+/* Cuerpo de texto */
+.reveal p,
+.reveal li {
+    color: #333333;
+    line-height: 1.6;
+}
+
+.reveal p {
+    font-size: 0.9em;
+}
+
+/* Tablas */
+.reveal table {
+    margin: auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.reveal table th {
+    font-weight: bold;
+    background-color: #C7C2BA; /* Gris UAH */
+    color: #333333;
+    padding: 0.5em;
+}
+
+.reveal table th,
+.reveal table td {
+    text-align: left;
+    padding: 0.3em 0.5em;
+    border-bottom: 1px solid #C7C2BA;
+}
+
+.reveal table td {
+    color: #333333;
+}
+
+/* Columnas */
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+}
+
+.three-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5em;
+}
+
+/* Fragmentos destacados con color corporativo */
+.reveal .slides section .fragment.highlight-current-blue {
+    opacity: 1;
+    visibility: visible;
+}
+
+.reveal .slides section .fragment.highlight-current-blue.current-fragment {
+    color: #0046AD; /* Azul UAH */
+    font-weight: bold;
+}
+
+/* Código - Mejora de contraste y legibilidad */
+.reveal pre {
+    background-color: #f6f8fa;
+    border: 1px solid #C7C2BA; /* Gris UAH */
+    border-radius: 6px;
+    padding: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reveal pre code {
+    max-height: 600px;
+    font-size: 0.85em;
+    line-height: 1.5;
+    color: #333333;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* Colores de sintaxis con buen contraste */
+.reveal pre code .hljs-keyword,
+.reveal pre code .hljs-built_in,
+.reveal pre code .hljs-type {
+    color: #E98300; /* Naranja UAH para keywords */
+    font-weight: 600;
+}
+
+.reveal pre code .hljs-string {
+    color: #0046AD; /* Azul UAH para strings */
+    font-weight: 500;
+}
+
+.reveal pre code .hljs-comment {
+    color: #666666;
+    font-style: italic;
+}
+
+.reveal pre code .hljs-function {
+    color: #00985F; /* Verde UAH para funciones */
+    font-weight: 600;
+}
+
+.reveal pre code .hljs-number,
+.reveal pre code .hljs-literal {
+    color: #91420E; /* Marrón UAH para números */
+    font-weight: 500;
+}
+
+/* Listas */
+.reveal ul,
+.reveal ol {
+    text-align: left;
+    margin-left: 1em;
+}
+
+.reveal ul li,
+.reveal ol li {
+    margin: 0.5em 0;
+    color: #333333;
+}
+
+/* Enlaces con color corporativo */
+.reveal a {
+    color: #0046AD; /* Azul UAH */
+    text-decoration: underline;
+}
+
+.reveal a:hover {
+    color: #003080; /* Azul UAH más oscuro para hover */
+}
+
+/* Bloques de código inline */
+.reveal code:not(pre code) {
+    background-color: #f6f8fa;
+    color: #E98300; /* Naranja UAH */
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid #C7C2BA;
+    font-weight: 500;
+}
+
+/* Alineación y legibilidad */
+.reveal .slides section {
+    text-align: left;
+}
+
+.reveal .slides section > h1,
+.reveal .slides section > h2,
+.reveal .slides section > h3 {
+    text-align: center;
+}
+
+/* Notas del presentador */
+.reveal .speaker-notes {
+    font-size: 0.8em;
+    background-color: #f9f9f9;
+    border-left: 4px solid #0046AD; /* Azul UAH */
+    padding: 1em;
+    margin-top: 1em;
+    color: #333333;
+}
+
+/* Slides de título con fondo corporativo */
+.reveal .slides section.title-slide {
+    background-color: #0046AD; /* Azul UAH */
+    color: #ffffff;
+}
+
+.reveal .slides section.title-slide h1,
+.reveal .slides section.title-slide h2,
+.reveal .slides section.title-slide p {
+    color: #ffffff;
+}
+
+/* Barra de progreso con color corporativo */
+.reveal .progress {
+    color: #0046AD; /* Azul UAH */
+}
+
+/* Controles de navegación */
+.reveal .controls {
+    color: #0046AD; /* Azul UAH */
+}
+
+/* Elementos destacados con colores de acento */
+.reveal .highlight {
+    background-color: #D3BF96; /* Oro UAH */
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.reveal .alert {
+    background-color: #E98300; /* Naranja UAH */
+    color: #ffffff;
+    padding: 0.5em;
+    border-radius: 4px;
+    margin: 0.5em 0;
+}
+
+.reveal .success {
+    background-color: #00985F; /* Verde UAH */
+    color: #ffffff;
+    padding: 0.5em;
+    border-radius: 4px;
+    margin: 0.5em 0;
+}
+
+/* Mejoras de accesibilidad */
+.reveal .slides section[data-background-color] {
+    /* Asegurar contraste en slides con fondo de color */
+}
+
+.reveal .slides section[data-background-color="#0046AD"] {
+    color: #ffffff;
+}
+
+.reveal .slides section[data-background-color="#0046AD"] h1,
+.reveal .slides section[data-background-color="#0046AD"] h2,
+.reveal .slides section[data-background-color="#0046AD"] h3 {
+    color: #ffffff;
+}
+

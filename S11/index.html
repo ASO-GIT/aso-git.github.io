@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Laboratorio S11: Fundamentos de Docker y Desarrollo Local</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="../shared/css/uah-reveal.css">
+    
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/github.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Título -->
+            <section class="title-slide">
+                <h1>Laboratorio S11</h1>
+                <h2>Fundamentos de Docker y Desarrollo Local</h2>
+                <p>Ampliación de Sistemas Operativos</p>
+                <p><small>Curso 2025-2026</small></p>
+                <p><small>Universidad de Alcalá - Patrimonio de la Humanidad</small></p>
+                <aside class="notes">
+                    Bienvenida a la sesión. Verificar que todos tienen Docker instalado y funcionando.
+                </aside>
+            </section>
+
+            <!-- Agenda -->
+            <section>
+                <h2>Agenda</h2>
+                <ul>
+                    <li class="fragment">Introducción a Docker</li>
+                    <li class="fragment">Construcción de imágenes Docker</li>
+                    <li class="fragment">DevContainers</li>
+                    <li class="fragment">Docker Compose con PostgreSQL</li>
+                    <li class="fragment">Gestión de secretos</li>
+                    <li class="fragment">Prácticas hands-on</li>
+                </ul>
+                <aside class="notes">
+                    Presentar la estructura de la sesión. Duración total: 4 horas con descansos.
+                </aside>
+            </section>
+
+            <!-- BLOQUE 1: Introducción a Docker -->
+            <section>
+                <section>
+                    <h2>Bloque 1: Introducción a Docker</h2>
+                    <p class="fragment">Conceptos fundamentales</p>
+                    <p class="fragment">Comandos básicos</p>
+                    <p class="fragment">Volúmenes y puertos</p>
+                    <p class="fragment">Práctica con Nginx</p>
+                    <aside class="notes">
+                        Este bloque introduce los conceptos básicos de Docker. Es fundamental que los estudiantes entiendan la diferencia entre imágenes y contenedores.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Qué es Docker?</h2>
+                    <p class="fragment">Plataforma de contenedores</p>
+                    <p class="fragment">Empaqueta aplicaciones y dependencias</p>
+                    <p class="fragment">Contenedores ligeros y portables</p>
+                    <aside class="notes">
+                        Docker permite empaquetar aplicaciones de forma que funcionen igual en cualquier entorno.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Contenedores vs Máquinas Virtuales</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Máquinas Virtuales</h3>
+                            <ul>
+                                <li class="fragment">Sistema operativo completo</li>
+                                <li class="fragment">Hipervisor necesario</li>
+                                <li class="fragment">Mayor consumo de recursos</li>
+                                <li class="fragment">Inicio más lento</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Contenedores Docker</h3>
+                            <ul>
+                                <li class="fragment">Comparte kernel del host</li>
+                                <li class="fragment">Sin hipervisor</li>
+                                <li class="fragment">Menor consumo de recursos</li>
+                                <li class="fragment">Inicio rápido</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">
+                        La diferencia clave es que los contenedores comparten el kernel del host, mientras que las VMs necesitan un sistema operativo completo.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Conceptos Fundamentales</h2>
+                    <ul>
+                        <li class="fragment"><strong>Imagen</strong>: Plantilla de solo lectura</li>
+                        <li class="fragment"><strong>Contenedor</strong>: Instancia ejecutable de una imagen</li>
+                        <li class="fragment"><strong>Dockerfile</strong>: Instrucciones para construir imágenes</li>
+                        <li class="fragment"><strong>Registro</strong>: Repositorio de imágenes (Docker Hub, GCR, etc.)</li>
+                    </ul>
+                    <aside class="notes">
+                        Es crucial que entiendan que las imágenes son inmutables y los contenedores son instancias efímeras.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Arquitectura de Docker</h2>
+                    <ul>
+                        <li class="fragment"><strong>Cliente Docker</strong>: Interfaz de línea de comandos</li>
+                        <li class="fragment"><strong>Daemon Docker</strong>: Gestiona contenedores, imágenes, volúmenes</li>
+                        <li class="fragment"><strong>containerd</strong>: Gestiona el ciclo de vida de contenedores</li>
+                        <li class="fragment"><strong>Kernel del host</strong>: Proporciona aislamiento</li>
+                    </ul>
+                    <aside class="notes">
+                        Docker utiliza una arquitectura cliente-servidor. El daemon es el componente principal que gestiona todo.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Comandos Básicos: Imágenes</h2>
+                    <pre><code data-trim data-noescape>
+# Formato nuevo (recomendado)
+docker image ls          # Listar imágenes
+docker image pull &lt;img&gt;  # Descargar imagen
+docker image rm &lt;img&gt;    # Eliminar imagen
+docker image prune       # Limpiar imágenes no usadas
+docker image inspect &lt;img&gt; # Inspeccionar imagen
+                    </code></pre>
+                    <p class="fragment"><small>Formato antiguo: <code>docker images</code> (aún válido)</small></p>
+                    <aside class="notes">
+                        Enfatizar el uso del formato nuevo que es más explícito y claro.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Comandos Básicos: Contenedores</h2>
+                    <pre><code data-trim data-noescape>
+# Formato nuevo (recomendado)
+docker container ls      # Listar contenedores activos
+docker container ls -a   # Listar todos los contenedores
+docker container stop &lt;cont&gt;   # Detener contenedor
+docker container start &lt;cont&gt;  # Iniciar contenedor
+docker container rm &lt;cont&gt;     # Eliminar contenedor
+docker container exec -it &lt;cont&gt; &lt;cmd&gt; # Ejecutar comando
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar la diferencia entre contenedores en ejecución y detenidos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Volúmenes en Docker</h2>
+                    <p class="fragment">Permiten persistencia de datos</p>
+                    <p class="fragment">Comparten archivos entre host y contenedor</p>
+                    <div class="fragment">
+                        <h3>Tipos:</h3>
+                        <ul>
+                            <li><strong>Named Volumes</strong>: Gestionados por Docker</li>
+                            <li><strong>Bind Mounts</strong>: Mapean directorios del host</li>
+                            <li><strong>tmpfs Mounts</strong>: En memoria RAM</li>
+                        </ul>
+                    </div>
+                    <aside class="notes">
+                        Sin volúmenes, todos los datos se pierden al eliminar el contenedor.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Comandos de Volúmenes</h2>
+                    <pre><code data-trim data-noescape>
+docker volume create &lt;nombre&gt;    # Crear volumen
+docker volume ls                  # Listar volúmenes
+docker volume inspect &lt;nombre&gt;   # Inspeccionar volumen
+docker volume rm &lt;nombre&gt;        # Eliminar volumen
+docker volume prune               # Limpiar volúmenes no usados
+                    </code></pre>
+                    <aside class="notes">
+                        Los volúmenes nombrados son ideales para producción, los bind mounts para desarrollo.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Publicación de Puertos</h2>
+                    <p class="fragment">Los contenedores están aislados por defecto</p>
+                    <p class="fragment">Necesitamos publicar puertos para acceder desde el host</p>
+                    <pre class="fragment"><code data-trim data-noescape>
+# Mapeo específico
+docker run -p 8080:80 nginx:alpine
+
+# Puerto aleatorio
+docker run -p 80 nginx:alpine
+
+# Publicar todos los EXPOSE
+docker run -P nginx:alpine
+                    </code></pre>
+                    <aside class="notes">
+                        IMPORTANTE: EXPOSE en Dockerfile solo documenta, no publica. Se necesita -p para publicar realmente.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>EXPOSE vs -p</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>EXPOSE en Dockerfile</h3>
+                            <ul>
+                                <li class="fragment">Solo documentación</li>
+                                <li class="fragment">No publica puertos</li>
+                                <li class="fragment">Información para otros desarrolladores</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>-p en docker run</h3>
+                            <ul>
+                                <li class="fragment">Publicación real</li>
+                                <li class="fragment">Mapea host:contenedor</li>
+                                <li class="fragment">Necesario para acceso externo</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">
+                        Esta es una confusión común. Aclarar que EXPOSE es solo documentación.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Práctica 1: Servidor Web Nginx</h2>
+                    <p class="fragment">Objetivo: Familiarizarse con comandos básicos</p>
+                    <ul>
+                        <li class="fragment">Gestión de imágenes y contenedores</li>
+                        <li class="fragment">Publicación de puertos</li>
+                        <li class="fragment">Volúmenes (bind mount y named volume)</li>
+                        <li class="fragment">Comandos de gestión avanzados</li>
+                    </ul>
+                    <aside class="notes">
+                        Esta práctica integra todos los conceptos básicos aprendidos. Es fundamental para el resto de la sesión.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- BLOQUE 2: Construcción de Imágenes Docker -->
+            <section>
+                <section>
+                    <h2>Bloque 2: Construcción de Imágenes Docker</h2>
+                    <p class="fragment">Sintaxis de Dockerfile</p>
+                    <p class="fragment">Mejores prácticas</p>
+                    <p class="fragment">Multi-stage builds</p>
+                    <p class="fragment">Práctica: Nginx y Flask</p>
+                    <aside class="notes">
+                        Este bloque enseña cómo crear imágenes personalizadas. Es importante seguir mejores prácticas desde el principio.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Qué es un Dockerfile?</h2>
+                    <p class="fragment">Archivo de texto con instrucciones</p>
+                    <p class="fragment">Define cómo construir una imagen</p>
+                    <p class="fragment">Cada instrucción crea una capa</p>
+                    <p class="fragment">Docker cachea capas para builds rápidos</p>
+                    <aside class="notes">
+                        El orden de las instrucciones es crucial para aprovechar el cache.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Sintaxis Básica de Dockerfile</h2>
+                    <pre><code data-trim data-noescape>
+FROM python:3.11-slim    # Imagen base (obligatoria)
+WORKDIR /app             # Directorio de trabajo
+COPY requirements.txt .  # Copiar archivos
+RUN pip install -r requirements.txt  # Ejecutar comandos
+COPY app.py .            # Copiar código
+EXPOSE 5000              # Documentar puerto
+CMD ["python", "app.py"] # Comando por defecto
+                    </code></pre>
+                    <aside class="notes">
+                        Explicar cada instrucción y su propósito. FROM debe ser la primera.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Mejores Prácticas</h2>
+                    <ul>
+                        <li class="fragment">Usar imágenes base oficiales y específicas</li>
+                        <li class="fragment">Evitar <code>latest</code> para reproducibilidad</li>
+                        <li class="fragment">Minimizar número de capas</li>
+                        <li class="fragment">Ordenar instrucciones de estáticas a dinámicas</li>
+                        <li class="fragment">Usar <code>.dockerignore</code></li>
+                        <li class="fragment">Nunca incluir secretos en imágenes</li>
+                    </ul>
+                    <aside class="notes">
+                        Estas prácticas mejoran seguridad, tamaño y velocidad de build.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Optimización del Cache</h2>
+                    <pre><code data-trim data-noescape>
+# ❌ MAL: Dependencias se reinstalan siempre
+COPY . .
+RUN pip install -r requirements.txt
+
+# ✅ BIEN: Cache de dependencias
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY app.py .
+                    </code></pre>
+                    <p class="fragment">Las capas se cachean si no cambian</p>
+                    <aside class="notes">
+                        Este es uno de los errores más comunes. Mostrar cómo el orden afecta el cache.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Multi-stage Builds</h2>
+                    <p class="fragment">Múltiples imágenes FROM en un Dockerfile</p>
+                    <p class="fragment">Copiar artefactos entre etapas</p>
+                    <p class="fragment">Reduce tamaño final de la imagen</p>
+                    <pre class="fragment"><code data-trim data-noescape>
+FROM python:3.11-slim as builder
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --user -r requirements.txt
+
+FROM python:3.11-slim
+COPY --from=builder /root/.local /root/.local
+COPY app.py .
+CMD ["python", "app.py"]
+                    </code></pre>
+                    <aside class="notes">
+                        Útil para aplicaciones que necesitan herramientas de build pesadas pero solo requieren el resultado final.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Ejemplo: Servidor Web Nginx</h2>
+                    <pre><code data-trim data-noescape>
+FROM nginx:1.25-alpine
+WORKDIR /usr/share/nginx/html
+COPY index.html /usr/share/nginx/html/
+COPY assets/ /usr/share/nginx/html/assets/
+EXPOSE 80
+                    </code></pre>
+                    <p class="fragment">Contenido embebido en la imagen</p>
+                    <p class="fragment">Portable y versionado</p>
+                    <aside class="notes">
+                        Comparar con bind mounts de la Práctica 1. Este enfoque es mejor para producción.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Práctica 2: Construcción de Imágenes</h2>
+                    <p class="fragment">Ejemplo A: Nginx con contenido personalizado</p>
+                    <p class="fragment">Ejemplo B: Aplicación Flask</p>
+                    <ul>
+                        <li class="fragment">Crear Dockerfiles funcionales</li>
+                        <li class="fragment">Construir imágenes</li>
+                        <li class="fragment">Ejecutar contenedores</li>
+                        <li class="fragment">Verificar funcionamiento</li>
+                    </ul>
+                    <aside class="notes">
+                        Los estudiantes deben crear ambos ejemplos para entender diferentes tipos de aplicaciones.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- BLOQUE 3: DevContainers -->
+            <section>
+                <section>
+                    <h2>Bloque 3: DevContainers</h2>
+                    <p class="fragment">Entornos de desarrollo consistentes</p>
+                    <p class="fragment">Configuración con devcontainer.json</p>
+                    <p class="fragment">Integración con VS Code/Cursor</p>
+                    <p class="fragment">Práctica: Configurar entorno Python</p>
+                    <aside class="notes">
+                        DevContainers resuelven el problema de "funciona en mi máquina". Muy útil para equipos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Qué son DevContainers?</h2>
+                    <p class="fragment">Especificación para entornos de desarrollo</p>
+                    <p class="fragment">Define entorno completo en contenedor</p>
+                    <p class="fragment">Garantiza consistencia entre desarrolladores</p>
+                    <p class="fragment">Elimina problemas de "funciona en mi máquina"</p>
+                    <aside class="notes">
+                        DevContainers es una especificación abierta, no solo de Docker.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Ventajas de DevContainers</h2>
+                    <ul>
+                        <li class="fragment">Consistencia entre desarrolladores</li>
+                        <li class="fragment">Fácil onboarding de nuevos miembros</li>
+                        <li class="fragment">Aislamiento de dependencias del host</li>
+                        <li class="fragment">Reproducibilidad exacta del entorno</li>
+                        <li class="fragment">Mismo entorno en desarrollo y CI/CD</li>
+                    </ul>
+                    <aside class="notes">
+                        Especialmente útil cuando diferentes desarrolladores usan diferentes sistemas operativos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Configuración Básica</h2>
+                    <p>Archivo: <code>.devcontainer/devcontainer.json</code></p>
+                    <pre><code data-trim data-noescape>
+{
+  "name": "Python Development",
+  "image": "python:3.11-slim",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  },
+  "postCreateCommand": "pip install -r requirements.txt"
+}
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar cómo se configura el entorno completo con extensiones y comandos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Casos de Uso</h2>
+                    <ul>
+                        <li class="fragment">Proyectos con dependencias específicas del sistema</li>
+                        <li class="fragment">Equipos con diferentes sistemas operativos</li>
+                        <li class="fragment">Necesidad de versiones específicas de herramientas</li>
+                        <li class="fragment">Desarrollo que requiere servicios adicionales (BD, colas)</li>
+                        <li class="fragment">Proyectos legacy con dependencias complejas</li>
+                    </ul>
+                    <aside class="notes">
+                        No todos los proyectos necesitan DevContainers, pero son muy útiles en estos casos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Práctica 3: DevContainers</h2>
+                    <p class="fragment">Configurar entorno Python</p>
+                    <ul>
+                        <li class="fragment">Crear devcontainer.json</li>
+                        <li class="fragment">Configurar extensiones de VS Code/Cursor</li>
+                        <li class="fragment">Abrir proyecto en contenedor</li>
+                        <li class="fragment">Verificar funcionamiento</li>
+                    </ul>
+                    <aside class="notes">
+                        Los estudiantes deben experimentar con diferentes configuraciones.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- BLOQUE 4: Docker Compose -->
+            <section>
+                <section>
+                    <h2>Bloque 4: Docker Compose</h2>
+                    <p class="fragment">Aplicaciones multi-contenedor</p>
+                    <p class="fragment">PostgreSQL con Flask</p>
+                    <p class="fragment">Gestión de secretos</p>
+                    <p class="fragment">Práctica completa</p>
+                    <aside class="notes">
+                        Este bloque integra todo lo aprendido en una aplicación real con base de datos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Qué es Docker Compose?</h2>
+                    <p class="fragment">Herramienta para aplicaciones multi-contenedor</p>
+                    <p class="fragment">Define servicios en archivo YAML</p>
+                    <p class="fragment">Gestiona dependencias, redes y volúmenes</p>
+                    <p class="fragment">Un solo comando para levantar toda la aplicación</p>
+                    <aside class="notes">
+                        Docker Compose simplifica enormemente la gestión de múltiples contenedores relacionados.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Conceptos Fundamentales</h2>
+                    <ul>
+                        <li class="fragment"><strong>Servicio</strong>: Contenedor definido en docker-compose.yml</li>
+                        <li class="fragment"><strong>Volumen</strong>: Persistencia de datos</li>
+                        <li class="fragment"><strong>Red</strong>: Comunicación entre contenedores</li>
+                        <li class="fragment"><strong>Dependencias</strong>: Orden de inicio de servicios</li>
+                    </ul>
+                    <aside class="notes">
+                        Cada servicio puede tener su propia configuración de imagen, variables de entorno, volúmenes, etc.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Estructura de docker-compose.yml</h2>
+                    <pre><code data-trim data-noescape>
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+
+volumes:
+  postgres_data:
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar la estructura básica. Explicar cada sección.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Gestión de Secretos</h2>
+                    <p class="fragment"><strong>NUNCA</strong> hardcodear credenciales</p>
+                    <div class="fragment">
+                        <h3>Mejores Prácticas:</h3>
+                        <ul>
+                            <li>Usar archivo <code>.env</code> para desarrollo</li>
+                            <li>Incluir <code>.env</code> en <code>.gitignore</code></li>
+                            <li>Crear <code>.env.example</code> sin valores sensibles</li>
+                            <li>Usar <code>env_file</code> en docker-compose.yml</li>
+                        </ul>
+                    </div>
+                    <aside class="notes">
+                        La seguridad es fundamental. Mostrar ejemplos de qué NO hacer.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Ejemplo: .env y .gitignore</h2>
+                    <pre><code data-trim data-noescape>
+# .env (NO commitear)
+DB_USER=postgres
+DB_PASSWORD=mi_password_seguro
+DB_NAME=flaskapp
+
+# .gitignore
+.env
+                    </code></pre>
+                    <pre class="fragment"><code data-trim data-noescape>
+# .env.example (SÍ commitear)
+DB_USER=postgres
+DB_PASSWORD=change_me
+DB_NAME=flaskapp
+                    </code></pre>
+                    <aside class="notes">
+                        Mostrar la diferencia entre .env y .env.example. Enfatizar la importancia de .gitignore.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Comandos de Docker Compose</h2>
+                    <pre><code data-trim data-noescape>
+docker compose up          # Iniciar servicios
+docker compose up -d       # Iniciar en segundo plano
+docker compose up --build  # Construir e iniciar
+docker compose down        # Detener servicios
+docker compose down -v     # Detener y eliminar volúmenes
+docker compose logs        # Ver logs
+docker compose ps          # Listar servicios
+                    </code></pre>
+                    <aside class="notes">
+                        Estos son los comandos más comunes. Mostrar la diferencia entre up y down.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Práctica 4: Flask + PostgreSQL</h2>
+                    <p class="fragment">Aplicación completa con:</p>
+                    <ul>
+                        <li class="fragment">Docker Compose con dos servicios</li>
+                        <li class="fragment">Gestión segura de secretos</li>
+                        <li class="fragment">Volúmenes para persistencia</li>
+                        <li class="fragment">Healthchecks para dependencias</li>
+                        <li class="fragment">CRUD básico con SQLAlchemy</li>
+                    </ul>
+                    <aside class="notes">
+                        Esta práctica integra todo lo aprendido. Es la más compleja pero también la más completa.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>¿Qué es un ORM?</h2>
+                    <p class="fragment"><strong>ORM (Object-Relational Mapping)</strong>: Técnica que mapea objetos de programación a tablas de base de datos relacionales</p>
+                    <div class="fragment">
+                        <h3>Ventajas:</h3>
+                        <ul>
+                            <li>Código más legible y mantenible</li>
+                            <li>Protección contra inyección SQL</li>
+                            <li>Independencia del motor de base de datos</li>
+                            <li>Validación automática de datos</li>
+                        </ul>
+                    </div>
+                    <aside class="notes">
+                        Explicar que un ORM permite trabajar con bases de datos usando objetos Python en lugar de escribir SQL directo. Esto hace el código más seguro y mantenible.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>ORM: Concepto Visual</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Sin ORM (SQL directo)</h3>
+                            <pre><code data-trim data-noescape>
+cursor.execute("""
+    SELECT id, title, 
+           completed 
+    FROM tasks 
+    WHERE id = %s
+""", (task_id,))
+                            </code></pre>
+                        </div>
+                        <div>
+                            <h3>Con ORM (SQLAlchemy)</h3>
+                            <pre><code data-trim data-noescape>
+task = Task.query.get(task_id)
+task.completed = True
+db.session.commit()
+                            </code></pre>
+                        </div>
+                    </div>
+                    <p class="fragment">El ORM traduce automáticamente objetos Python a SQL</p>
+                    <aside class="notes">
+                        Mostrar la diferencia entre escribir SQL directo y usar un ORM. El código con ORM es más legible y seguro.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>SQLAlchemy</h2>
+                    <p class="fragment"><strong>SQLAlchemy</strong>: ORM más popular para Python</p>
+                    <div class="fragment">
+                        <h3>Componentes principales:</h3>
+                        <ul>
+                            <li><strong>Modelo</strong>: Clase Python que representa una tabla</li>
+                            <li><strong>Sesión</strong>: Contexto de trabajo con la base de datos</li>
+                            <li><strong>Query</strong>: Objeto para consultar datos usando métodos Python</li>
+                        </ul>
+                    </div>
+                    <p class="fragment"><strong>Flask-SQLAlchemy</strong>: Extensión que simplifica la integración con Flask</p>
+                    <aside class="notes">
+                        SQLAlchemy es el estándar de facto para trabajar con bases de datos en Python. Flask-SQLAlchemy añade integración específica con Flask.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Ejemplo de Modelo SQLAlchemy</h2>
+                    <pre><code data-trim data-noescape>
+from app import db
+from datetime import datetime
+
+class Task(db.Model):
+    __tablename__ = 'tasks'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    completed = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'completed': self.completed
+        }
+                    </code></pre>
+                    <p class="fragment">Cada atributo representa una columna en la tabla</p>
+                    <aside class="notes">
+                        Mostrar cómo se define un modelo. Cada columna se define como un atributo de clase con su tipo y restricciones.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Arquitectura de la Aplicación</h2>
+                    <div style="text-align: left; font-size: 0.8em;">
+                        <p class="fragment"><strong>Cliente HTTP</strong> → Solicitudes REST</p>
+                        <p class="fragment"><strong>Flask App</strong> → Procesa requests, gestiona rutas</p>
+                        <p class="fragment"><strong>SQLAlchemy ORM</strong> → Traduce objetos Python a SQL</p>
+                        <p class="fragment"><strong>PostgreSQL</strong> → Almacena datos persistentes</p>
+                        <p class="fragment"><strong>Volúmenes Docker</strong> → Persistencia de datos entre reinicios</p>
+                    </div>
+                    <aside class="notes">
+                        Explicar el flujo completo desde el cliente hasta la base de datos, mostrando cómo cada componente se comunica con el siguiente.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Bloques Funcionales</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Capa de Presentación</h3>
+                            <ul>
+                                <li class="fragment">Rutas Flask (routes.py)</li>
+                                <li class="fragment">Endpoints REST</li>
+                                <li class="fragment">Validación de requests</li>
+                                <li class="fragment">Serialización JSON</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Capa de Lógica</h3>
+                            <ul>
+                                <li class="fragment">Modelos SQLAlchemy (models.py)</li>
+                                <li class="fragment">Operaciones CRUD</li>
+                                <li class="fragment">Validación de datos</li>
+                                <li class="fragment">Lógica de negocio</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="fragment">
+                        <h3>Capa de Datos</h3>
+                        <ul>
+                            <li>PostgreSQL (contenedor)</li>
+                            <li>Volúmenes Docker (persistencia)</li>
+                            <li>Connection string desde .env</li>
+                        </ul>
+                    </div>
+                    <aside class="notes">
+                        Desglosar la aplicación en sus capas funcionales. Esto ayuda a entender la separación de responsabilidades.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Flujo de Datos Completo</h2>
+                    <ol style="font-size: 0.85em;">
+                        <li class="fragment">Cliente envía request HTTP (POST /tasks)</li>
+                        <li class="fragment">Flask recibe request en ruta definida</li>
+                        <li class="fragment">Ruta valida datos y crea instancia del modelo</li>
+                        <li class="fragment">SQLAlchemy traduce objeto Python a SQL INSERT</li>
+                        <li class="fragment">PostgreSQL ejecuta query y almacena datos</li>
+                        <li class="fragment">SQLAlchemy convierte resultado a objeto Python</li>
+                        <li class="fragment">Flask serializa objeto a JSON y responde</li>
+                    </ol>
+                    <p class="fragment"><strong>Todo esto ocurre de forma transparente gracias al ORM</strong></p>
+                    <aside class="notes">
+                        Mostrar el flujo completo de una operación CRUD, desde el request HTTP hasta la respuesta, pasando por todas las capas.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Integración Flask + PostgreSQL</h2>
+                    <p class="fragment">SQLAlchemy como ORM</p>
+                    <p class="fragment">Configuración mediante variables de entorno</p>
+                    <p class="fragment">Connection string desde .env</p>
+                    <p class="fragment">Modelos y operaciones CRUD</p>
+                    <aside class="notes">
+                        Resumir cómo Flask se conecta a PostgreSQL usando SQLAlchemy y variables de entorno.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- Resumen y Recursos -->
+            <section>
+                <section>
+                    <h2>Resumen</h2>
+                    <ul>
+                        <li class="fragment">Docker permite empaquetar aplicaciones en contenedores</li>
+                        <li class="fragment">Imágenes son plantillas, contenedores son instancias</li>
+                        <li class="fragment">Dockerfiles definen cómo construir imágenes</li>
+                        <li class="fragment">DevContainers proporcionan entornos consistentes</li>
+                        <li class="fragment">Docker Compose gestiona aplicaciones multi-contenedor</li>
+                        <li class="fragment">Nunca hardcodear secretos: usar .env y .gitignore</li>
+                        <li class="fragment">Volúmenes permiten persistencia de datos</li>
+                    </ul>
+                    <aside class="notes">
+                        Repasar los conceptos clave aprendidos durante la sesión.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Conceptos Clave</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Comandos</h3>
+                            <ul>
+                                <li><code>docker image</code></li>
+                                <li><code>docker container</code></li>
+                                <li><code>docker volume</code></li>
+                                <li><code>docker compose</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Archivos</h3>
+                            <ul>
+                                <li><code>Dockerfile</code></li>
+                                <li><code>docker-compose.yml</code></li>
+                                <li><code>.devcontainer.json</code></li>
+                                <li><code>.env</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside class="notes">
+                        Repasar los comandos y archivos más importantes.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Recursos</h2>
+                    <ul>
+                        <li><a href="https://docs.docker.com/">Documentación Docker</a></li>
+                        <li><a href="https://docs.docker.com/compose/">Docker Compose Docs</a></li>
+                        <li><a href="https://containers.dev/">DevContainers Specification</a></li>
+                        <li><a href="https://flask.palletsprojects.com/">Flask Documentation</a></li>
+                        <li><a href="https://www.sqlalchemy.org/">SQLAlchemy Documentation</a></li>
+                        <li>Materiales del laboratorio en el repositorio</li>
+                    </ul>
+                    <aside class="notes">
+                        Proporcionar recursos para profundizar en los temas aprendidos.
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>Próximos Pasos</h2>
+                    <ol>
+                        <li class="fragment">Completar todas las prácticas</li>
+                        <li class="fragment">Experimentar con los ejemplos</li>
+                        <li class="fragment">Revisar troubleshooting si hay problemas</li>
+                        <li class="fragment">Explorar ejercicios adicionales</li>
+                        <li class="fragment">Prepararse para S12: CI/CD y Cloud Run</li>
+                    </ol>
+                    <aside class="notes">
+                        Motivar a los estudiantes a practicar y experimentar. La siguiente sesión construirá sobre estos fundamentos.
+                    </aside>
+                </section>
+            </section>
+
+            <!-- Fin -->
+            <section>
+                <h2>Resumen de la Sesión</h2>
+                <ul>
+                    <li class="fragment">Hemos cubierto los fundamentos de Docker</li>
+                    <li class="fragment">Prácticas completadas durante la sesión</li>
+                    <li class="fragment">Conceptos clave: imágenes, contenedores, volúmenes, puertos</li>
+                    <li class="fragment">Dockerfiles, DevContainers y Docker Compose</li>
+                </ul>
+                <p class="fragment" style="margin-top: 2em;"><strong>¿Preguntas o dudas?</strong></p>
+                <aside class="notes">
+                    Abrir turno de preguntas al final de la sesión. Resolver dudas sobre las prácticas realizadas.
+                </aside>
+            </section>
+
+            <section>
+                <h1>¡Gracias!</h1>
+                <p>Continúa practicando y experimentando</p>
+                <p><small>Próxima sesión: S12 - Docker en CI/CD y Cloud Run</small></p>
+                <aside class="notes">
+                    Cierre positivo de la sesión. Recordar que la siguiente sesión construirá sobre estos fundamentos.
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/js/reveal-config.js"></script>
+</body>
+</html>
+

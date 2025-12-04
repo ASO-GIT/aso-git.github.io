@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Laboratorio S9: PaaS, Cloud Run Functions y Pub/Sub</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="../shared/css/uah-reveal.css">
+    
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/github.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Título -->
+            <section class="title-slide">
+                <h1>Laboratorio S9</h1>
+                <h2>PaaS, Cloud Run Functions y Pub/Sub</h2>
+                <p>Ampliación de Sistemas Operativos</p>
+                <p><small>Curso 2025-2026</small></p>
+                <p><small>Universidad de Alcalá - Patrimonio de la Humanidad</small></p>
+            </section>
+
+            <!-- Agenda -->
+            <section>
+                <h2>Agenda</h2>
+                <ul>
+                    <li>Introducción a PaaS</li>
+                    <li>Servicios PaaS en Google Cloud</li>
+                    <li>Cloud Run Functions</li>
+                    <li>Pub/Sub</li>
+                    <li>Prácticas hands-on</li>
+                </ul>
+            </section>
+
+            <!-- Sección: Introducción a PaaS -->
+            <section>
+                <section>
+                    <h2>¿Qué es PaaS?</h2>
+                    <p class="fragment">Platform as a Service (PaaS)</p>
+                    <p class="fragment">Abstrae infraestructura completa</p>
+                    <p class="fragment">Desarrolladores se enfocan en código</p>
+                </section>
+
+                <section>
+                    <h2>Responsabilidad Compartida</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Proveedor gestiona:</h3>
+                            <ul>
+                                <li>Infraestructura física</li>
+                                <li>Sistemas operativos</li>
+                                <li>Middleware</li>
+                                <li>Herramientas de desarrollo</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Desarrollador gestiona:</h3>
+                            <ul>
+                                <li>Código de aplicación</li>
+                                <li>Configuración de app</li>
+                                <li>Datos de aplicación</li>
+                                <li>Seguridad a nivel app</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Comparación: IaaS vs PaaS vs SaaS</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspecto</th>
+                                <th>IaaS</th>
+                                <th>PaaS</th>
+                                <th>SaaS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Control</td>
+                                <td>Alto</td>
+                                <td>Medio</td>
+                                <td>Bajo</td>
+                            </tr>
+                            <tr>
+                                <td>Gestión</td>
+                                <td>Alta</td>
+                                <td>Media</td>
+                                <td>Baja</td>
+                            </tr>
+                            <tr>
+                                <td>Velocidad</td>
+                                <td>Lenta</td>
+                                <td>Rápida</td>
+                                <td>Inmediata</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section>
+                    <h2>Ventajas de PaaS</h2>
+                    <ul>
+                        <li class="fragment">Velocidad de desarrollo</li>
+                        <li class="fragment">Escalabilidad automática</li>
+                        <li class="fragment">Reducción de costos operacionales</li>
+                        <li class="fragment">Herramientas integradas</li>
+                        <li class="fragment">Actualizaciones automáticas</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Sección: Servicios PaaS en GCP -->
+            <section>
+                <section>
+                    <h2>Servicios PaaS en Google Cloud</h2>
+                    <p>Ecosistema completo para desarrollo moderno</p>
+                </section>
+
+                <section>
+                    <h2>Compute Serverless</h2>
+                    <ul>
+                        <li><strong>Cloud Run Functions</strong>: FaaS para funciones individuales (Gen 2)</li>
+                        <li><strong>Cloud Run</strong>: Contenedores serverless</li>
+                        <li><strong>App Engine</strong>: Plataforma de aplicaciones gestionada</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Mensajería y Eventos</h2>
+                    <ul>
+                        <li><strong>Pub/Sub</strong>: Mensajería asíncrona distribuida</li>
+                        <li><strong>Eventarc</strong>: Sistema unificado de eventos</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Almacenamiento Gestionado</h2>
+                    <ul>
+                        <li><strong>Cloud SQL</strong>: Bases de datos relacionales</li>
+                        <li><strong>Firestore</strong>: NoSQL documental</li>
+                        <li><strong>Cloud Storage</strong>: Almacenamiento de objetos</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>¿Cuándo usar cada servicio?</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Cloud Run Functions</h3>
+                            <ul>
+                                <li>Código simple</li>
+                                <li>Respuesta a eventos</li>
+                                <li>Bajo costo</li>
+                                <li>Gen 2 (recomendado)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Cloud Run</h3>
+                            <ul>
+                                <li>Aplicaciones completas</li>
+                                <li>Migración de apps</li>
+                                <li>Mayor control</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Sección: Cloud Run Functions -->
+            <section>
+                <section>
+                    <h2>Cloud Run Functions</h2>
+                    <p>Function as a Service (FaaS) - Gen 2</p>
+                    <p class="fragment">Ejecuta código sin gestionar servidores</p>
+                    <p class="fragment"><small>Construido sobre Cloud Run y Eventarc</small></p>
+                </section>
+
+                <section>
+                    <h2>Arquitectura Serverless</h2>
+                    <ul>
+                        <li class="fragment">Código se ejecuta en contenedores efímeros</li>
+                        <li class="fragment">Escalado automático desde cero</li>
+                        <li class="fragment">Pago solo por tiempo de ejecución</li>
+                        <li class="fragment">Sin gestión de infraestructura</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Lifecycle de una Función</h2>
+                    <ol>
+                        <li class="fragment">Cold Start: Inicialización del contenedor</li>
+                        <li class="fragment">Warm: Reutilización de contenedor existente</li>
+                        <li class="fragment">Invocación: Ejecución del código</li>
+                        <li class="fragment">Timeout: Destrucción después de inactividad</li>
+                    </ol>
+                </section>
+
+                <section>
+                    <h2>Tipos de Triggers</h2>
+                    <ul>
+                        <li><strong>HTTP</strong>: Invocación mediante peticiones HTTP</li>
+                        <li><strong>Cloud Storage</strong>: Eventos de almacenamiento</li>
+                        <li><strong>Pub/Sub</strong>: Mensajes de Pub/Sub</li>
+                        <li><strong>Firestore</strong>: Cambios en base de datos</li>
+                        <li><strong>Eventarc</strong>: Eventos de múltiples servicios</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>HTTP vs Event Triggers</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>HTTP Triggers</h3>
+                            <ul>
+                                <li>@functions_framework.http</li>
+                                <li>Recibe flask.Request</li>
+                                <li>APIs REST, webhooks</li>
+                                <li>Respuesta síncrona</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Event Triggers</h3>
+                            <ul>
+                                <li>@functions_framework.cloud_event</li>
+                                <li>Formato CloudEvents</li>
+                                <li>Storage, Pub/Sub, etc.</li>
+                                <li>Procesamiento asíncrono</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>CloudEvents: Formato Estándar</h2>
+                    <p>CloudEvents es un estándar de la industria para representar eventos de manera consistente</p>
+                    <p class="fragment">Proporciona estructura unificada independientemente de la fuente</p>
+                </section>
+
+                <section>
+                    <h2>Estructura de CloudEvents</h2>
+                    <p>Un evento CloudEvent contiene campos estándar:</p>
+                    <ul>
+                        <li class="fragment"><strong>id</strong>: Identificador único del evento</li>
+                        <li class="fragment"><strong>type</strong>: Tipo de evento (ej: google.cloud.storage.object.v1.finalized)</li>
+                        <li class="fragment"><strong>source</strong>: Origen del evento (servicio que generó el evento)</li>
+                        <li class="fragment"><strong>time</strong>: Timestamp de cuando ocurrió el evento</li>
+                        <li class="fragment"><strong>data</strong>: Datos específicos del evento (varía según el tipo)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Ejemplo: Evento Cloud Storage</h2>
+                    <pre><code data-trim data-noescape>
+{
+  "id": "event-123",
+  "type": "google.cloud.storage.object.v1.finalized",
+  "source": "//storage.googleapis.com/buckets/mi-bucket",
+  "time": "2024-11-01T12:00:00Z",
+  "data": {
+    "bucket": "mi-bucket",
+    "name": "archivo.csv",
+    "contentType": "text/csv",
+    "size": "1024"
+  }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Acceso a Datos en Python</h2>
+                    <p>En funciones con @functions_framework.cloud_event:</p>
+                    <pre><code data-trim>
+@functions_framework.cloud_event
+def process_event(cloud_event):
+    # Metadata del evento
+    event_id = cloud_event.get('id')
+    event_type = cloud_event.get('type')
+    
+    # Datos específicos del evento
+    event_data = cloud_event.get('data', {})
+    bucket = event_data.get('bucket')
+    file_name = event_data.get('name')
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Ventajas de CloudEvents</h2>
+                    <ul>
+                        <li class="fragment">Formato consistente entre diferentes servicios</li>
+                        <li class="fragment">Interoperabilidad entre sistemas</li>
+                        <li class="fragment">Facilita debugging y logging</li>
+                        <li class="fragment">Estándar de la industria (CNCF)</li>
+                        <li class="fragment">Soporte en múltiples plataformas cloud</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Métodos de Despliegue</h2>
+                    <div class="three-columns">
+                        <div>
+                            <h3>Console</h3>
+                            <ul>
+                                <li>Interfaz visual</li>
+                                <li>Ideal para prototipado</li>
+                                <li>Rápido y fácil</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>gcloud CLI</h3>
+                            <ul>
+                                <li>Automatización</li>
+                                <li>Scripts y CI/CD</li>
+                                <li>Control granular</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Terraform</h3>
+                            <ul>
+                                <li>Infrastructure as Code</li>
+                                <li>Versionado</li>
+                                <li>Reproducibilidad</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Configuración de Funciones</h2>
+                    <ul>
+                        <li><strong>Memory</strong>: 128MB - 8GB</li>
+                        <li><strong>Timeout</strong>: Hasta 540 segundos</li>
+                        <li><strong>Runtime</strong>: Python, Node.js, Go, Java</li>
+                        <li><strong>Variables de entorno</strong>: Configuración sin código</li>
+                        <li><strong>Secrets</strong>: Secret Manager para credenciales</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Mejores Prácticas</h2>
+                    <ul>
+                        <li class="fragment">Funciones idempotentes</li>
+                        <li class="fragment">Diseño stateless</li>
+                        <li class="fragment">Manejo robusto de errores</li>
+                        <li class="fragment">Minimizar cold starts</li>
+                        <li class="fragment">Optimizar tiempo de ejecución</li>
+                        <li class="fragment">Usar Service Accounts con permisos mínimos</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Sección: Pub/Sub -->
+            <section>
+                <section>
+                    <h2>Google Cloud Pub/Sub</h2>
+                    <p>Mensajería asíncrona distribuida</p>
+                    <p class="fragment">Desacopla componentes mediante eventos</p>
+                </section>
+
+                <section>
+                    <h2>Conceptos Fundamentales</h2>
+                    <ul>
+                        <li class="fragment"><strong>Topics</strong>: Canales donde se publican mensajes</li>
+                        <li class="fragment"><strong>Messages</strong>: Unidades de datos con payload y atributos</li>
+                        <li class="fragment"><strong>Subscriptions</strong>: Puntos de consumo desde topics</li>
+                        <li class="fragment"><strong>Publishers</strong>: Componentes que envían mensajes</li>
+                        <li class="fragment"><strong>Subscribers</strong>: Componentes que consumen mensajes</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Flujo de Mensajes</h2>
+                    <pre><code data-trim>
+[Publisher] → [Topic] → [Subscription] → [Subscriber]
+                    </code></pre>
+                    <p class="fragment">Múltiples subscriptions pueden consumir del mismo topic</p>
+                </section>
+
+                <section>
+                    <h2>Pull vs Push Subscriptions</h2>
+                    <div class="two-columns">
+                        <div>
+                            <h3>Pull</h3>
+                            <ul>
+                                <li>Cliente solicita mensajes</li>
+                                <li>Control sobre tasa de consumo</li>
+                                <li>Ideal para procesamiento batch</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Push</h3>
+                            <ul>
+                                <li>Entrega automática a endpoint</li>
+                                <li>Menor latencia</li>
+                                <li>Ideal para Cloud Run Functions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Delivery Semantics</h2>
+                    <ul>
+                        <li class="fragment"><strong>At-least-once</strong>: Garantiza al menos una entrega</li>
+                        <li class="fragment"><strong>Exactly-once</strong>: Garantiza exactamente una entrega (opcional)</li>
+                        <li class="fragment">Aplicaciones deben ser idempotentes</li>
+                        <li class="fragment">Mensajes deben confirmarse (ack)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Integración con Cloud Run Functions</h2>
+                    <ul>
+                        <li>Functions pueden tener trigger Pub/Sub</li>
+                        <li>Subscription se crea automáticamente</li>
+                        <li>Mensajes llegan como CloudEvents</li>
+                        <li>Escalado automático según volumen</li>
+                        <li>Formato estándar CloudEvents</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Sección: Prácticas -->
+            <section>
+                <section>
+                    <h2>Prácticas del Laboratorio</h2>
+                    <ol>
+                        <li>Desarrollo local (Flask + functions_framework)</li>
+                        <li>Cloud Run Function HTTP básica</li>
+                        <li>Cloud Run Function con trigger Storage</li>
+                        <li>Pub/Sub básico</li>
+                        <li>Integración Cloud Run Functions + Pub/Sub</li>
+                    </ol>
+                </section>
+
+                <section>
+                    <h2>Práctica 0: Desarrollo Local</h2>
+                    <p>Antes de desplegar, desarrolla localmente:</p>
+                    <ul>
+                        <li>Flask para requests HTTP</li>
+                        <li>functions-framework para testing</li>
+                        <li>Probar sin costos</li>
+                        <li>Debugging más fácil</li>
+                    </ul>
+                    <p class="fragment"><strong>Duración</strong>: 30-40 minutos</p>
+                </section>
+
+                <section>
+                    <h2>Práctica 1: HTTP Function</h2>
+                    <p>Desplegar función HTTP con @functions_framework.http:</p>
+                    <ul>
+                        <li>Console de GCP</li>
+                        <li>gcloud CLI</li>
+                        <li>Terraform</li>
+                    </ul>
+                    <p class="fragment"><strong>Duración</strong>: 40-50 minutos</p>
+                </section>
+
+                <section>
+                    <h2>Práctica 2: Storage Trigger</h2>
+                    <p>Función con @functions_framework.cloud_event</p>
+                    <ul>
+                        <li>Event trigger de Storage</li>
+                        <li>Formato CloudEvents</li>
+                        <li>Procesamiento de CSV</li>
+                    </ul>
+                    <p class="fragment"><strong>Duración</strong>: 50-60 minutos</p>
+                </section>
+
+                <section>
+                    <h2>Práctica 3: Pub/Sub Básico</h2>
+                    <p>Crear y usar topics y subscriptions</p>
+                    <ul>
+                        <li>Crear topic y subscription</li>
+                        <li>Publicar mensajes</li>
+                        <li>Consumir mensajes</li>
+                        <li>Comparar pull vs push</li>
+                    </ul>
+                    <p class="fragment"><strong>Duración</strong>: 45-55 minutos</p>
+                </section>
+
+                <section>
+                    <h2>Práctica 4: Integración Completa</h2>
+                    <p>Arquitectura event-driven con CloudEvents</p>
+                    <ul>
+                        <li>Publisher → Topic → Function</li>
+                        <li>CloudEvents estándar</li>
+                        <li>Procesamiento automático</li>
+                        <li>Almacenamiento de resultados</li>
+                    </ul>
+                    <p class="fragment"><strong>Duración</strong>: 60-70 minutos</p>
+                </section>
+            </section>
+
+            <!-- Sección: Resumen y Recursos -->
+            <section>
+                <section>
+                    <h2>Resumen</h2>
+                    <ul>
+                        <li class="fragment">PaaS abstrae infraestructura completa</li>
+                        <li class="fragment">Cloud Run Functions (Gen 2) para código serverless</li>
+                        <li class="fragment">Desarrollo local con functions_framework</li>
+                        <li class="fragment">HTTP triggers y Event triggers (CloudEvents)</li>
+                        <li class="fragment">Pub/Sub para mensajería asíncrona</li>
+                        <li class="fragment">Tres métodos de despliegue: Console, CLI, Terraform</li>
+                        <li class="fragment">Integración para arquitecturas event-driven</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Recursos</h2>
+                    <ul>
+                        <li><a href="https://cloud.google.com/functions/docs">Documentación Cloud Run Functions</a></li>
+                        <li><a href="https://cloud.google.com/functions/docs/functions-framework">Functions Framework</a></li>
+                        <li><a href="https://cloudevents.io/">CloudEvents Specification</a></li>
+                        <li><a href="https://cloud.google.com/pubsub/docs">Documentación Pub/Sub</a></li>
+                        <li><a href="https://cloud.google.com/pricing">Pricing GCP</a></li>
+                        <li>Materiales del laboratorio en GitHub</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Próximos Pasos</h2>
+                    <ol>
+                        <li>Configurar entorno GCP</li>
+                        <li>Revisar documentación teórica</li>
+                        <li>Completar prácticas en orden</li>
+                        <li>Experimentar con casos de uso propios</li>
+                    </ol>
+                </section>
+            </section>
+
+            <!-- Fin -->
+            <section>
+                <h1>¡Manos a la obra!</h1>
+                <p>¿Preguntas antes de comenzar?</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/js/reveal-config.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentaciones - Ampliación de Sistemas Operativos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .presentations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .presentation-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .presentation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .presentation-card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .presentation-card .session-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .presentation-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .presentation-card .topics {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .presentation-card .topics li {
+            padding: 0.25rem 0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .presentation-card .topics li:before {
+            content: "▸ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .link-button {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .link-button:hover {
+            background: #5568d3;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 3rem;
+            padding: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .presentations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Presentaciones del Curso</h1>
+            <p>Ampliación de Sistemas Operativos - Curso 2025-2026</p>
+        </header>
+
+        <div class="presentations-grid">
+            <a href="S9/index.html" class="presentation-card">
+                <span class="session-number">S9</span>
+                <h2>PaaS, Cloud Run Functions y Pub/Sub</h2>
+                <p>Introducción a Platform as a Service, desarrollo de funciones serverless con Cloud Run Functions y mensajería asíncrona con Pub/Sub.</p>
+                <ul class="topics">
+                    <li>Fundamentos de PaaS</li>
+                    <li>Cloud Run Functions</li>
+                    <li>Pub/Sub básico</li>
+                    <li>Arquitectura event-driven</li>
+                </ul>
+                <span class="link-button">Ver presentación →</span>
+            </a>
+
+            <a href="S11/index.html" class="presentation-card">
+                <span class="session-number">S11</span>
+                <h2>Fundamentos de Docker y Desarrollo Local</h2>
+                <p>Introducción a Docker, construcción de imágenes, DevContainers y Docker Compose para desarrollo local con bases de datos.</p>
+                <ul class="topics">
+                    <li>Conceptos de contenedores</li>
+                    <li>Dockerfiles y mejores prácticas</li>
+                    <li>DevContainers</li>
+                    <li>Docker Compose con PostgreSQL</li>
+                </ul>
+                <span class="link-button">Ver presentación →</span>
+            </a>
+
+            <a href="S12/index.html" class="presentation-card">
+                <span class="session-number">S12</span>
+                <h2>Docker en CI/CD y Cloud Run</h2>
+                <p>Publicación de imágenes Docker, pipelines CI/CD con Cloud Build y despliegue de aplicaciones contenedorizadas en Cloud Run.</p>
+                <ul class="topics">
+                    <li>Registros de imágenes</li>
+                    <li>Cloud Build para CI/CD</li>
+                    <li>Cloud Run</li>
+                    <li>Secret Manager</li>
+                </ul>
+                <span class="link-button">Ver presentación →</span>
+            </a>
+        </div>
+
+        <footer>
+            <p>Curso 2025-2026 | Ampliación de Sistemas Operativos</p>
+        </footer>
+    </div>
+</body>
+</html>
+
