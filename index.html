@@ -13,81 +13,24 @@
       --uah-azul-digital: #0075F4;
       --uah-institucional: #142456;
       --uah-dorado: #E1CA97;
-      --uah-gris: #E8E8E8;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: var(--uah-institucional);
-      min-height: 100vh;
-      color: #1a1a1a;
-    }
-    header {
-      background: var(--uah-azul);
-      color: #fff;
-      padding: 2.5rem 1.5rem 2rem;
-      border-bottom: 4px solid var(--uah-dorado);
-    }
+    body { font-family: Inter, system-ui, sans-serif; background: var(--uah-institucional); min-height: 100vh; color: #1a1a1a; }
+    header { background: var(--uah-azul); color: #fff; padding: 2.5rem 1.5rem 2rem; border-bottom: 4px solid var(--uah-dorado); }
     header .wrap { max-width: 1100px; margin: 0 auto; }
     header h1 { font-size: 1.85rem; font-weight: 700; margin-bottom: 0.35rem; }
     header p { opacity: 0.9; font-size: 1.05rem; }
     header .meta { margin-top: 0.75rem; font-size: 0.9rem; color: var(--uah-dorado); }
     main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
-    h2 {
-      color: #fff;
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin: 1.75rem 0 1rem;
-      letter-spacing: 0.02em;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.25rem;
-    }
-    a.card {
-      display: block;
-      background: #fff;
-      border-radius: 8px;
-      padding: 1.35rem 1.5rem;
-      text-decoration: none;
-      color: inherit;
-      border-top: 4px solid var(--uah-azul);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    a.card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.28);
-    }
-    a.card.legacy { border-top-color: #7a8699; opacity: 0.95; }
-    .badge {
-      display: inline-block;
-      background: var(--uah-azul);
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      margin-bottom: 0.65rem;
-    }
-    a.card.legacy .badge { background: #5c6778; }
+    h2 { color: #fff; font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 1rem; letter-spacing: 0.02em; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+    a.card { display: block; background: #fff; border-radius: 8px; padding: 1.35rem 1.5rem; text-decoration: none; color: inherit; border-top: 4px solid var(--uah-azul); box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    a.card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.28); }
     a.card h3 { color: var(--uah-azul); font-size: 1.15rem; margin-bottom: 0.5rem; }
-    a.card.legacy h3 { color: var(--uah-institucional); }
     a.card p { color: #555; font-size: 0.92rem; line-height: 1.5; }
-    .go {
-      display: inline-block;
-      margin-top: 0.9rem;
-      color: var(--uah-azul-digital);
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    footer {
-      text-align: center;
-      color: rgba(255,255,255,0.7);
-      padding: 1.5rem;
-      font-size: 0.85rem;
-    }
+    .badge { display: inline-block; background: var(--uah-azul); color: #fff; font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; margin-bottom: 0.65rem; }
+    .go { display: inline-block; margin-top: 0.9rem; color: var(--uah-azul-digital); font-weight: 600; font-size: 0.9rem; }
+    footer { text-align: center; color: rgba(255,255,255,0.7); padding: 1.5rem; font-size: 0.85rem; }
     footer a { color: var(--uah-dorado); }
   </style>
 </head>
@@ -96,52 +39,46 @@
     <div class="wrap">
       <h1>Ampliación de Sistemas Operativos</h1>
       <p>ASO-GIT · 380015 · Escuela Politécnica Superior</p>
-      <p class="meta">Universidad de Alcalá · Presentaciones del curso</p>
+      <p class="meta">Universidad de Alcalá · Presentaciones del curso 2026-2027</p>
     </div>
   </header>
-
   <main>
     <h2>Curso 2026-2027</h2>
     <div class="grid">
-      <a class="card" href="2026-2027/s01/">
+      <a class="card" href="/pages/S01-presentacion/">
         <span class="badge">S01</span>
-        <h3>Presentación de la asignatura</h3>
-        <p>Datos del curso, bloques, calendario, evaluación continua y checklist de onboarding (7 sep 2026).</p>
+        <h3>Presentación y onboarding</h3>
+        <p>7 de septiembre de 2026</p>
         <span class="go">Abrir →</span>
       </a>
-      <a class="card" href="2026-2027/demo/">
-        <span class="badge">Demo</span>
-        <h3>Tema UAH 2026 (Slidev)</h3>
-        <p>Deck de prueba con identidad institucional 2025/26 (Inter, azul corporativo, logos EPS).</p>
+      <a class="card" href="/pages/S02-compute-engine/">
+        <span class="badge">S02</span>
+        <h3>Compute Engine, SSH y acceso a GCP</h3>
+        <p>14 de septiembre de 2026</p>
         <span class="go">Abrir →</span>
       </a>
-    </div>
-
-    <h2>Curso 2025-2026 (archivo)</h2>
-    <div class="grid">
-      <a class="card legacy" href="S9/index.html">
-        <span class="badge">S9</span>
-        <h3>PaaS, Cloud Run Functions y Pub/Sub</h3>
-        <p>PaaS, funciones serverless y mensajería asíncrona.</p>
+      <a class="card" href="/pages/S03-bash-scripting/">
+        <span class="badge">S03</span>
+        <h3>Programación de shell scripts (Bash)</h3>
+        <p>21 de septiembre de 2026</p>
         <span class="go">Abrir →</span>
       </a>
-      <a class="card legacy" href="S11/index.html">
-        <span class="badge">S11</span>
-        <h3>Docker y desarrollo local</h3>
-        <p>Contenedores, Dockerfiles, DevContainers y Compose.</p>
+      <a class="card" href="/pages/S04-shell-avanzado/">
+        <span class="badge">S04</span>
+        <h3>Herramientas avanzadas de procesamiento (jq, grep, awk, regex)</h3>
+        <p>28 de septiembre de 2026</p>
         <span class="go">Abrir →</span>
       </a>
-      <a class="card legacy" href="S12/index.html">
-        <span class="badge">S12</span>
-        <h3>Docker CI/CD y Cloud Run</h3>
-        <p>Registros, Cloud Build, Cloud Run y Secret Manager.</p>
+      <a class="card" href="/pages/demo/">
+        <span class="badge">demo</span>
+        <h3>demo</h3>
+        
         <span class="go">Abrir →</span>
       </a>
     </div>
   </main>
-
   <footer>
-    <p>Material docente UAH · <a href="https://github.com/ASO-GIT/aso-git.github.io">ASO-GIT/aso-git.github.io</a></p>
+    <p>Material docente UAH · <a href="https://github.com/uah-380015-docente/material">uah-380015-docente/material</a></p>
   </footer>
 </body>
 </html>
