@@ -1,0 +1,1 @@
+var e=`/S06-cf-pubsub/uah/logos/logo-eps-negro.png`;export{e as t};
