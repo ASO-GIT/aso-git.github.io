@@ -1,0 +1,1 @@
+var e=`/S07-docker/uah/logos/logo-eps-negro.png`;export{e as t};
