@@ -1,0 +1,1 @@
+var e=`/S09-cloud-run-service/uah/logos/logo-eps-negro.png`;export{e as t};
