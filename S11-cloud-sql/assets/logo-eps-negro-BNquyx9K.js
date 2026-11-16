@@ -1,0 +1,1 @@
+var e=`/S11-cloud-sql/uah/logos/logo-eps-negro.png`;export{e as t};
