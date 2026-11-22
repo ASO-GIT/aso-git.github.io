@@ -1,0 +1,1 @@
+var e=`/S12-terraform/uah/logos/logo-eps-negro.png`;export{e as t};
