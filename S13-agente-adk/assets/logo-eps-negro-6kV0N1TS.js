@@ -1,0 +1,1 @@
+var e=`/S13-agente-adk/uah/logos/logo-eps-negro.png`;export{e as t};

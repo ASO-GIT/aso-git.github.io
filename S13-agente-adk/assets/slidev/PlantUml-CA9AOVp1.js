@@ -1,0 +1,1 @@
+import{C as e,L as t,gt as n,h as r,y as i}from"../modules/shiki-QGSfYGjF.js";var a=[`src`,`alt`],o=e({__name:`PlantUml`,props:{code:{},server:{},scale:{},alt:{default:`PlantUML diagram`}},setup(e){let o=e,s=r(()=>`${o.server}/svg/${o.code}`);return(r,o)=>(t(),i(`img`,{src:s.value,style:n({scale:e.scale}),alt:e.alt},null,12,a))}});export{o as t};
